@@ -146,7 +146,7 @@ def draw_ball(draw, iso, pos, size, color):
 def render_world(iso, extra_parts=()):
     """Draws every world part back-to-front, plus any staged extra parts
     (dicts like the loaded ones, drawn in the same depth pass)."""
-    img = Image.new("RGB", (W, H), (110, 190, 235))
+    img = Image.new("RGB", (W, H), (118, 202, 248))
     draw = ImageDraw.Draw(img, "RGBA")
     all_parts = list(PARTS) + list(extra_parts)
     all_parts.sort(key=lambda pt: (pt.get("layer", 1), pt["pos"][0] + pt["pos"][2], pt["pos"][1]))
@@ -395,29 +395,13 @@ def draw_mascot_2d(draw, cx, ground, h):
     draw.ellipse([gx - gr, gy - gr, gx + gr, gy + gr], fill=(255, 242, 194), outline=(255, 205, 55), width=3)
 
 
-def draw_frame(img, title_lines, subtitle=None):
-    """The thumbnail's chunky decorative frame + title block."""
-    draw = ImageDraw.Draw(img, "RGBA")
-    # chunky rounded frame: navy band, gold pinstripe, corner stars
-    draw.rounded_rectangle([10, 10, W - 10, H - 10], radius=42, outline=(22, 26, 44), width=34)
-    draw.rounded_rectangle([30, 30, W - 30, H - 30], radius=30, outline=(255, 205, 55), width=6)
-    for (cx, cy) in [(34, 34), (W - 34, 34), (34, H - 34), (W - 34, H - 34)]:
-        r = 17
-        draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 205, 55), outline=(22, 26, 44), width=4)
-    y = 44
-    for text, size in title_lines:
-        f = font(size)
-        draw.text((W / 2, y), text, font=f, anchor="ma", fill=(255, 246, 205),
-                  stroke_width=max(4, size // 9), stroke_fill=(30, 26, 60))
-        y += size + 8
-    if subtitle:
-        draw.text((W / 2, y + 2), subtitle, font=font(25), anchor="ma", fill=(255, 255, 255),
-                  stroke_width=3, stroke_fill=(30, 26, 60))
-    return draw
-
-
 # ------------------------------------------------------------- shots
 def shot_thumbnail():
+    """Full-bleed cover, composed like the genre's reference thumbnails:
+    a bright world scene edge to edge, a giant income figure lettered
+    across the top in our currency, the Dewa Langit mascot large on
+    the right, our blocky avatar on the left, and the title bold along
+    the bottom. No frame — the art runs to every edge."""
     iso = Iso(-6, 4, 0, 3.0, 640, 330)
     img = render_world(iso)
     draw = ImageDraw.Draw(img, "RGBA")
@@ -434,12 +418,21 @@ def shot_thumbnail():
             draw_creature_iso(draw, iso, x, y, z, name)
         else:
             draw_avatar_iso(draw, iso, x, y, z)
-    draw = draw_frame(img, [("BRAINROT TYCOON", 66)], "STEAL - COLLECT - HATCH - RULE THE SKY")
+    # The giant income figure across the top — Paus Bulan's 600,000
+    # Coin/s, the biggest income in the game, in chunky stroked gold.
+    f_income = font(104)
+    draw.text((W / 2, 16), "600,000 Coin/s", font=f_income, anchor="ma",
+              fill=(255, 214, 64), stroke_width=14, stroke_fill=(32, 28, 64))
+    # Title along the bottom on a soft dark band so it reads over the
+    # world; the foreground pair stands in front of the band's ends.
+    draw.rectangle([0, 580, W, H], fill=(18, 20, 38, 168))
+    draw.text((W / 2, 592), "BRAINROT TYCOON", font=font(68), anchor="ma",
+              fill=(255, 246, 205), stroke_width=8, stroke_fill=(30, 26, 60))
     # foreground cover pair: avatar left, Dewa Langit mascot right
-    draw.ellipse([70, 640, 330, 678], fill=(0, 0, 0, 60))
-    draw.ellipse([880, 630, 1230, 676], fill=(0, 0, 0, 60))
-    draw_avatar_2d(draw, 200, 652, 235)
-    draw_mascot_2d(draw, 1055, 648, 300)
+    draw.ellipse([60, 630, 320, 670], fill=(0, 0, 0, 60))
+    draw.ellipse([884, 624, 1232, 672], fill=(0, 0, 0, 60))
+    draw_avatar_2d(draw, 190, 646, 240)
+    draw_mascot_2d(draw, 1058, 646, 305)
     save(img, os.path.join(ROOT, "screenshots", "1-thumbnail.png"))
 
 

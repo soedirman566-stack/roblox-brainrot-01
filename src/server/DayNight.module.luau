@@ -17,9 +17,11 @@ local GameConfig = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild
 
 local DayNight = {}
 
-local DAY_AMBIENT = Color3.fromRGB(120, 120, 130)
+-- Daytime is deliberately bright and sky-tinted — the sunny look of
+-- the genre's big games. Night keeps its moody blue.
+local DAY_AMBIENT = Color3.fromRGB(152, 178, 208)
 local NIGHT_AMBIENT = Color3.fromRGB(42, 48, 78)
-local DAY_BRIGHTNESS = 2.4
+local DAY_BRIGHTNESS = 2.9
 local NIGHT_BRIGHTNESS = 1.1
 
 local conveyor = nil

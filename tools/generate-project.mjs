@@ -14,7 +14,8 @@
 //     is a furnished pen: carpet, 24 podium pads, wall trim, a money
 //     vault, a rebirth crystal, an egg nest and a pen-upgrade post.
 //   - the shop row sits at the west end; the egg hatchery just south of
-//     it; the treadmill station east of the spawn plaza.
+//     it; the lucky block stand just north of it; the treadmill station
+//     east of the spawn plaza.
 //   - players spawn on a checkered plaza west of the lane, under a sign
 //     tower whose block letters spell BRAINROT TYCOON — the in-world logo.
 
@@ -197,11 +198,11 @@ function letterRow(text, centerX, topY, z, block, color) {
 
 const workspace = {
   $properties: { FilteringEnabled: true },
-  Ground: part([460, 2, 460], [0, -1.2, 0], rgb(96, 190, 92)),
+  Ground: part([460, 2, 460], [0, -1.2, 0], rgb(80, 204, 90)),
   // Ground colour variation: darker aprons under the base rows, sand
   // under the shop quarter, a dirt path from spawn to the lane.
-  ApronN: part([320, 0.08, 54], [0, 0.01, -56], rgb(74, 168, 74), { CanCollide: false }),
-  ApronS: part([320, 0.08, 54], [0, 0.01, 56], rgb(74, 168, 74), { CanCollide: false }),
+  ApronN: part([320, 0.08, 54], [0, 0.01, -56], rgb(62, 184, 72), { CanCollide: false }),
+  ApronS: part([320, 0.08, 54], [0, 0.01, 56], rgb(62, 184, 72), { CanCollide: false }),
   ShopSand: part([52, 0.08, 76], [-124, 0.02, 10], rgb(214, 188, 138), { CanCollide: false }),
   DirtPath: part([12, 0.08, 38], [-88, 0.02, 12], rgb(166, 128, 84), { CanCollide: false }),
   SpawnLocation: {
@@ -218,7 +219,7 @@ const workspace = {
     $className: 'Folder',
     Belt: part([216, 1, 12], [0, 0.5, 0], rgb(46, 46, 56)),
     // The red carpet the brainrots ride on.
-    Carpet: part([216, 0.1, 7], [0, 1.03, 0], rgb(204, 42, 52)),
+    Carpet: part([216, 0.1, 7], [0, 1.03, 0], rgb(226, 34, 48)),
     RailNorth: part([216, 1.6, 1.2], [0, 1.3, -6.8], rgb(245, 197, 66)),
     RailSouth: part([216, 1.6, 1.2], [0, 1.3, 6.8], rgb(245, 197, 66)),
     // Glowing edge strips (DayNight switches the material at night).
@@ -244,6 +245,8 @@ const workspace = {
     AwningB: part([9, 0.5, 14], [-119.5, 7.4, 3], rgb(245, 245, 245), { Rotation: [0, 0, -16] }),
     ShopGlowA: part([10, 2.2, 0.6], [-120.5, 10.4, -9], rgb(255, 110, 180), { Material: 'Neon' }),
     ShopGlowB: part([10, 2.2, 0.6], [-120.5, 10.4, 3], rgb(110, 220, 255), { Material: 'Neon' }),
+    // A neon trim along the platform's lane-facing edge.
+    NeonTrim: part([0.5, 0.5, 30], [-106.8, 0.75, 0], rgb(120, 240, 255), { Material: 'Neon', CanCollide: false }),
     SignBoard: sign([26, 7, 1.4], [-124, 13, -14], rgb(120, 72, 20)),
     SignPostL: part([1.6, 10, 1.6], [-136, 5, -14], rgb(110, 78, 46)),
     SignPostR: part([1.6, 10, 1.6], [-112, 5, -14], rgb(110, 78, 46)),
@@ -252,9 +255,33 @@ const workspace = {
   EggStation: {
     $className: 'Folder',
     Platform: part([32, 1, 18], [-124, 0, 26], rgb(214, 188, 138)),
+    NeonTrim: part([0.5, 0.5, 18], [-107.8, 0.75, 26], rgb(255, 140, 220), { Material: 'Neon', CanCollide: false }),
     EggStationSign: sign([24, 6, 1.2], [-124, 10, 17.2], rgb(150, 80, 120)),
     SignPostL: part([1.6, 10, 1.6], [-135, 5, 17.2], rgb(110, 78, 46)),
     SignPostR: part([1.6, 10, 1.6], [-113, 5, 17.2], rgb(110, 78, 46)),
+  },
+  // The lucky block stand, north of the shop row: two display blocks
+  // on pedestals (the server LuckyBlocks module builds the blocks and
+  // hangs the buy prompts on them) and three opening pads where a
+  // bought block waits to be cracked open.
+  LuckyBlockStand: {
+    $className: 'Folder',
+    Platform: part([34, 1, 20], [-124, 0, -25], rgb(120, 96, 170)),
+    Pedestal1: part([4.4, 2, 4.4], [-133, 1, -29], rgb(70, 60, 110)),
+    Pedestal2: part([4.4, 2, 4.4], [-115, 1, -29], rgb(70, 60, 110)),
+    OpeningPad1: part([6, 0.5, 6], [-136, 0.75, -19], rgb(238, 232, 218)),
+    OpeningPad2: part([6, 0.5, 6], [-124, 0.75, -19], rgb(238, 232, 218)),
+    OpeningPad3: part([6, 0.5, 6], [-112, 0.75, -19], rgb(238, 232, 218)),
+    // A striped canopy over the display blocks, fairground style.
+    CanopyPostL: part([1, 9, 1], [-139, 4.5, -29], rgb(110, 78, 46)),
+    CanopyPostR: part([1, 9, 1], [-109, 4.5, -29], rgb(110, 78, 46)),
+    Canopy: part([33, 0.8, 9], [-124, 9.4, -29], rgb(255, 208, 40)),
+    CanopyStripe: part([33, 0.85, 3], [-124, 9.42, -29], rgb(226, 34, 48)),
+    LuckySign: sign([24, 6, 1.2], [-124, 13.5, -29], rgb(120, 72, 20)),
+    SignPostL: part([1.6, 13, 1.6], [-135, 6.5, -29], rgb(110, 78, 46)),
+    SignPostR: part([1.6, 13, 1.6], [-113, 6.5, -29], rgb(110, 78, 46)),
+    // A neon trim along the platform's lane-facing edge.
+    NeonTrim: part([0.5, 0.5, 20], [-106.8, 0.75, -25], rgb(140, 255, 170), { Material: 'Neon', CanCollide: false }),
   },
   // The treadmill station, east of the spawn plaza: run on the belt,
   // win brainrots. The server Treadmill module finds Belt by name.
@@ -333,15 +360,20 @@ BASE_NAMES.forEach((name, i) => {
 });
 
 // The spawn plaza: checkered tiles, benches and planters around the
-// spawn pad.
+// spawn pad, framed by a crisp white border — the green-and-white
+// palette the simulator lobbies use.
 workspace.Plaza = { $className: 'Folder' };
+workspace.Plaza.FrameN = part([44, 0.3, 1.2], [-88, 0.1, 9.6], rgb(250, 250, 250), { CanCollide: false });
+workspace.Plaza.FrameS = part([44, 0.3, 1.2], [-88, 0.1, 50.4], rgb(250, 250, 250), { CanCollide: false });
+workspace.Plaza.FrameW = part([1.2, 0.3, 42], [-110.1, 0.1, 30], rgb(250, 250, 250), { CanCollide: false });
+workspace.Plaza.FrameE = part([1.2, 0.3, 42], [-65.9, 0.1, 30], rgb(250, 250, 250), { CanCollide: false });
 for (let ix = 0; ix < 8; ix += 1) {
   for (let iz = 0; iz < 8; iz += 1) {
     const light = (ix + iz) % 2 === 0;
     workspace.Plaza[`Tile${ix}_${iz}`] = part(
       [5, 0.12, 5],
       [-105.5 + ix * 5, 0.06, 12.5 + iz * 5],
-      light ? rgb(235, 232, 225) : rgb(150, 150, 160),
+      light ? rgb(242, 240, 234) : rgb(138, 150, 178),
       { CanCollide: false },
     );
   }
@@ -372,6 +404,14 @@ const treeSpots = [
   [80, -108], [-120, -100], [150, -105], [-170, 40], [170, -80], [60, 110],
   [-110, 108], [140, 30], [-160, -60], [100, -60],
 ];
+// A full tree line right around the map's edge — the simulator-lobby
+// look: the playable square reads as a platform floating in green.
+for (let e = -196; e <= 196; e += 28) {
+  treeSpots.push([e, -196], [e + 14, 196]);
+  if (Math.abs(e) < 180) {
+    treeSpots.push([-196, e + 14], [196, e]);
+  }
+}
 treeSpots.forEach(([x, z], i) => {
   const leaf = i % 5 === 4 ? rgb(232, 150, 60) : i % 2 === 0 ? rgb(52, 150, 66) : rgb(66, 170, 80);
   workspace.Decor[`Tree${i + 1}`] = {
@@ -443,8 +483,8 @@ const project = {
     Workspace: workspace,
     Lighting: {
       $properties: {
-        Ambient: rgb(120, 120, 130),
-        Brightness: 2.4,
+        Ambient: rgb(152, 178, 208),
+        Brightness: 2.9,
         GlobalShadows: true,
         Outlines: false,
         Technology: 'Voxel',

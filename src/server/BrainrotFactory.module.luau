@@ -254,4 +254,58 @@ function BrainrotFactory.Height(def): number
 	return 3.2 * scale + 2.1 * scale
 end
 
+-- A lucky block: one chunky cube wearing a big "?" on both broad faces,
+-- in the same blocky language as everything else the factory builds.
+-- The plain block is bright yellow with a white mark; the golden block
+-- is deep gold, glows, and wears a small crown stud on top. Feet at the
+-- origin frame, like a brainrot — the LuckyBlocks module shakes and
+-- grows the model with PivotTo/ScaleTo during the opening suspense.
+function BrainrotFactory.BuildLuckyBlock(golden: boolean, origin: CFrame): Model
+	local model = Instance.new("Model")
+	model.Name = if golden then "GoldenLuckyBlock" else "LuckyBlock"
+
+	local bodyColor = if golden then Color3.fromRGB(255, 176, 32) else Color3.fromRGB(255, 208, 40)
+	local body = makePart("Body", Vector3.new(3.4, 3.4, 3.4), bodyColor, Vector3.new(0, 1.7, 0), origin)
+	body.CanQuery = true -- the buy/open prompts target the body
+	if golden then
+		glowify(body)
+	end
+	model.PrimaryPart = body
+	body.Parent = model
+
+	-- A slightly proud lid so the cube reads as a block with a cap,
+	-- not a plain die.
+	local lid = makePart("Lid", Vector3.new(3.7, 0.5, 3.7), bodyColor:Lerp(Color3.new(1, 1, 1), 0.22), Vector3.new(0, 3.6, 0), origin)
+	if golden then
+		glowify(lid)
+	end
+	lid.Parent = model
+
+	-- The golden block's crown stud: one gold spike, king of blocks.
+	if golden then
+		makePart("CrownStud", Vector3.new(0.7, 0.9, 0.7), GOLD, Vector3.new(0, 4.3, 0), origin).Parent = model
+	end
+
+	-- The "?" itself, hung on the front and back faces.
+	for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+		local gui = Instance.new("SurfaceGui")
+		gui.Name = "QuestionMark"
+		gui.Face = face
+		gui.CanvasSize = Vector2.new(200, 200)
+		local mark = Instance.new("TextLabel")
+		mark.Size = UDim2.fromScale(1, 1)
+		mark.BackgroundTransparency = 1
+		mark.Font = Enum.Font.GothamBold
+		mark.TextScaled = true
+		mark.Text = "?"
+		mark.TextColor3 = if golden then Color3.fromRGB(255, 246, 205) else Color3.fromRGB(255, 255, 255)
+		mark.TextStrokeColor3 = if golden then Color3.fromRGB(150, 95, 10) else Color3.fromRGB(190, 130, 10)
+		mark.TextStrokeTransparency = 0.25
+		mark.Parent = gui
+		gui.Parent = body
+	end
+
+	return model
+end
+
 return BrainrotFactory

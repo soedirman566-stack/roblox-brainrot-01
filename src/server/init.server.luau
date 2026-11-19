@@ -18,6 +18,7 @@ local SpeedPass = require(script:WaitForChild("SpeedPass"))
 local Pen = require(script:WaitForChild("Pen"))
 local Treadmill = require(script:WaitForChild("Treadmill"))
 local Eggs = require(script:WaitForChild("Eggs"))
+local LuckyBlocks = require(script:WaitForChild("LuckyBlocks"))
 local DayNight = require(script:WaitForChild("DayNight"))
 
 -- Remotes the client HUD talks on.
@@ -79,6 +80,7 @@ Treadmill.Init({
 	end,
 })
 Eggs.Init({ Economy = Economy, Plots = PlotManager, Notify = notify })
+LuckyBlocks.Init({ Economy = Economy, Plots = PlotManager, Notify = notify })
 DayNight.Init({ Conveyor = Conveyor, Broadcast = broadcast })
 
 local function onCharacterAdded(player: Player, character: Model)
@@ -114,6 +116,7 @@ end
 local function onPlayerRemoving(player: Player)
 	Steal.DropCarried(player)
 	Eggs.ClearNest(player)
+	LuckyBlocks.ClearBlock(player)
 	PlotManager.ReleaseBase(player)
 	Economy.CleanupPlayer(player)
 end
@@ -147,6 +150,8 @@ shopRequest.OnServerEvent:Connect(function(player, action, arg)
 		Treadmill.BuyUpgrade(player)
 	elseif action == "BuyEgg" and type(arg) == "number" then
 		Eggs.BuyEgg(player, arg)
+	elseif action == "BuyLuckyBlock" and type(arg) == "number" then
+		LuckyBlocks.BuyBlock(player, arg)
 	end
 end)
 

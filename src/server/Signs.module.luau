@@ -3,9 +3,9 @@
 -- are named in the project and this module finds them and gives each a
 -- SurfaceGui label on both faces. One job: sign text — static boards at
 -- boot (welcome tower, shop, shrine, the six rarity arches over the belt,
--- the treadmill and the egg hatchery), and live boards after that: every
--- base board shows its owner's name and pen level, and the leaderboard
--- board near spawn lists the top earners.
+-- the treadmill, the egg hatchery and the lucky block stand), and live
+-- boards after that: every base board shows its owner's name and pen
+-- level, and the leaderboard board near spawn lists the top earners.
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -109,6 +109,12 @@ function Signs.Init()
 	local eggBoard = eggs and eggs:FindFirstChild("EggStationSign")
 	if eggBoard then
 		labelBoard(eggBoard, "EGG HATCHERY", Color3.fromRGB(255, 200, 230))
+	end
+
+	local lucky = Workspace:FindFirstChild("LuckyBlockStand")
+	local luckyBoard = lucky and lucky:FindFirstChild("LuckySign")
+	if luckyBoard then
+		labelBoard(luckyBoard, "LUCKY BLOCKS", Color3.fromRGB(255, 226, 130))
 	end
 
 	local bases = Workspace:FindFirstChild("Bases")

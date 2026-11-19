@@ -427,6 +427,15 @@ for index, eggDef in ipairs(GameConfig.EggDefs) do
 	end)
 	table.insert(eggButtons, button)
 end
+
+shopLabel("🍀 LUCKY BLOCKS — open at the stand", Color3.fromRGB(255, 226, 130), 30)
+for index, blockDef in ipairs(GameConfig.LuckyBlockDefs) do
+	local button = shopBuyButton("", if blockDef.Golden then Color3.fromRGB(190, 130, 20) else Color3.fromRGB(170, 140, 30))
+	button.Text = "🍀 " .. blockDef.Name .. " · " .. formatCoin(blockDef.Price) .. " Coin"
+	button.Activated:Connect(function()
+		shopRequest:FireServer("BuyLuckyBlock", index)
+	end)
+end
 shopPanel.CanvasSize = UDim2.fromOffset(0, shopOrder * 40 + 220)
 
 local function refreshShop()
@@ -480,6 +489,6 @@ end)
 
 -- Help line.
 local help = makeLabel(gui, "Help", UDim2.fromOffset(760, 30), UDim2.new(0, 16, 1, -44),
-	"Buy from the belt · Run the treadmill · Hatch eggs · Upgrade your pen · Every dawn the belt restocks · Bases are tsunami-safe!",
+	"Buy from the belt · Crack lucky blocks · Run the treadmill · Hatch eggs · Upgrade your pen · Every dawn the belt restocks!",
 	Color3.fromRGB(230, 230, 230), 15)
 help.TextStrokeTransparency = 0.6

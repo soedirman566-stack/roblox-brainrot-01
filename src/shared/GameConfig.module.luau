@@ -109,6 +109,20 @@ GameConfig.EggDefs = {
 }
 
 -- ============================================================
+-- LUCKY BLOCKS: bought with Coin at the stand by the shop, opened
+-- on the spot for a random brainrot. The plain block rolls
+-- Common-Legendary; the golden block rolls Rare-Mythic at better
+-- odds. Dewa Langit is in NEITHER table — it stays conveyor and
+-- Telur Ilahi only, like the treadmill rule.
+-- ============================================================
+GameConfig.LuckyBlockDefs = {
+	{ Name = "Lucky Block", Price = 1500, Golden = false,
+		Factors = { Common = 1, Rare = 0.5, Epic = 0.12, Legendary = 0.025 } },
+	{ Name = "Golden Lucky Block", Price = 25000, Golden = true,
+		Factors = { Rare = 1, Epic = 0.45, Legendary = 0.12, Mythic = 0.02 } },
+}
+
+-- ============================================================
 -- DAY / NIGHT: one full cycle is 6 minutes — 4 of day, 2 of night.
 -- At every dawn the conveyor stock is wiped and restocked.
 -- ============================================================
