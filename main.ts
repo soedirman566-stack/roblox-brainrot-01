@@ -1,19 +1,21 @@
-// A working roblox-brainrot-01 entry (Node 22, standard library only): the game is this directory's Rojo
-// project, built into game.rbxl with `rojo build default.project.json --output game.rbxl`, and the program
-// hands it in. It copies game.rbxl, src/, screenshots/ and PLAY.json from beside this file to /output and
-// writes /output/dossier.json, the summary the judge reads, with the vendored make.fun library. A starting
-// point, not a winner: it is a grey square that moves with the arrow keys. Build your game, rebuild
-// game.rbxl, put your PNG or JPEG screenshots in screenshots/ (the first by name is the cover, and one of
-// them is the thumbnail you upload for your game on Roblox) and fill in PLAY.json with your published place.
+// BRAINROT TYCOON — the hand-in program for the roblox-brainrot-01 entry.
 //
-// Every name under /output starts with a letter, a digit or _ and holds only letters, digits, . _ and -: the
-// grader fails an entry whose output holds any other, so a file such as .gitkeep or .DS_Store copied in fails it.
-// So src/ and screenshots/ are copied without any name that starts with a dot, at any depth.
+// The game itself is the Rojo project in this directory: Luau sources under
+// src/ and a world described by default.project.json (emitted by
+// tools/generate-project.mjs), built into game.rbxl with
+//   rojo build default.project.json --output game.rbxl
+// This program's one job is to hand that game in: it copies game.rbxl,
+// PLAY.json, src/ and screenshots/ into the output directory and writes the
+// dossier the judge reads, using the vendored make.fun library
+// (vendor/makefun-roblox.ts, untouched).
 //
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
+// Names in the output must start with a letter, digit or underscore and use
+// only letters, digits, '.', '_' and '-', so every copy below skips any
+// name starting with a dot (.git, .DS_Store and friends would fail the
+// entry). Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { copyFileSync, cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-roblox.ts';
@@ -21,19 +23,45 @@ import { buildDossier } from './vendor/makefun-roblox.ts';
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
-/** cpSync's filter: leave out every file and directory whose name starts with a dot (.gitkeep, .DS_Store, .git). */
-const notDotted = (path: string): boolean => !basename(path).startsWith('.');
+const keepName = (path: string): boolean => !basename(path).startsWith('.');
 
+// Pre-flight: the hand-in is only worth making if the built place and at
+// least one Luau source are actually here — fail loudly rather than hand
+// in a starter or an empty shell.
+const luauFiles: string[] = [];
+const collectLuau = (dir: string): void => {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) collectLuau(full);
+    else if (entry.name.endsWith('.luau')) luauFiles.push(full);
+  }
+};
+collectLuau(join(here, 'src'));
+if (!existsSync(join(here, 'game.rbxl')) || luauFiles.length === 0) {
+  throw new Error('game.rbxl or src/*.luau missing — build the game first (rojo build)');
+}
+
+mkdirSync(out, { recursive: true });
 copyFileSync(join(here, 'game.rbxl'), join(out, 'game.rbxl'));
 copyFileSync(join(here, 'PLAY.json'), join(out, 'PLAY.json'));
-cpSync(join(here, 'src'), join(out, 'src'), { recursive: true, filter: notDotted });
+cpSync(join(here, 'src'), join(out, 'src'), { recursive: true, filter: keepName });
 mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true, filter: notDotted });
+if (existsSync(join(here, 'screenshots'))) {
+  cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true, filter: keepName });
+}
 
-// The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
-// scorer would refuse (more than 4 screenshots or one over 256 KiB; a place of more than 500000 instances, whose
-// scripts' sources come to over 8 MiB or whose scripts' paths come to over 1048576 characters, in all).
+// The dossier, with the scorer's caps passed through so this program fails
+// exactly where the scorer would: too many or too heavy screenshots, a
+// place past the instance cap, script sources or paths past their caps.
 writeFileSync(
   join(out, 'dossier.json'),
-  buildDossier(out, { text_max_bytes: 65536, screenshots: { max: 4, max_bytes: 262144 }, max_instances: 500000, scripts_max_source_bytes: 8388608, scripts_max_path_chars: 1048576 }),
+  buildDossier(out, {
+    text_max_bytes: 65536,
+    screenshots: { max: 4, max_bytes: 262144 },
+    max_instances: 500000,
+    scripts_max_source_bytes: 8388608,
+    scripts_max_path_chars: 1048576,
+  }),
 );
+
+console.log(`Brainrot Tycoon handed in: game.rbxl, PLAY.json, ${luauFiles.length} Luau sources, screenshots/, dossier.json`);
