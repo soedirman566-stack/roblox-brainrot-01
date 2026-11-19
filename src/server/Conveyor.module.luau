@@ -54,31 +54,32 @@ end
 local function giveToPlayer(player: Player, def, model: Model): boolean
 	local pad = plots.FreePad(player)
 	if not pad then
-		tell(player, "Your base is full!")
+		tell(player, "Your pen is full!")
 		return false
 	end
 	plots.PlaceOnPad(player, def, model, pad)
 	return true
 end
 
-local function spawnOffer()
+local function spawnOffer(startX: number?)
 	local def = BrainrotDefs.Roll(rng, false)
-	local origin = CFrame.new(BELT_START_X, BELT_Y, 0) * CFrame.Angles(0, math.rad(-90), 0)
+	local x = startX or BELT_START_X
+	local origin = CFrame.new(x, BELT_Y, 0) * CFrame.Angles(0, math.rad(-90), 0)
 	local model = Factory.Build(def, origin)
 	model.Parent = Workspace
 
-	local offer = { Model = model, Def = def, X = BELT_START_X }
+	local offer = { Model = model, Def = def, X = x }
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.Name = "BuyPrompt"
-	prompt.ActionText = "Buy $" .. BrainrotDefs.FormatCash(def.Price)
-	prompt.ObjectText = def.Name .. " · $" .. BrainrotDefs.FormatCash(def.Income) .. "/s"
+	prompt.ActionText = "Buy · " .. BrainrotDefs.FormatCash(def.Price) .. " Coin"
+	prompt.ObjectText = def.Name .. " · " .. BrainrotDefs.FormatCash(def.Income) .. " Coin/s"
 	prompt.HoldDuration = 0.4
 	prompt.MaxActivationDistance = 12
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = model:FindFirstChild("Body")
 	prompt.Triggered:Connect(function(player)
 		if not economy.TrySpend(player, def.Price) then
-			tell(player, "Not enough cash for " .. def.Name .. "!")
+			tell(player, "Not enough Coin for " .. def.Name .. "!")
 			return
 		end
 		if giveToPlayer(player, def, model) then
@@ -86,7 +87,7 @@ local function spawnOffer()
 			prompt:Destroy()
 			tell(player, "Bought " .. def.Name .. "!")
 		else
-			economy.AddCash(player, def.Price) -- refund: no pad, no sale
+			economy.AddCoin(player, def.Price) -- refund: no pad, no sale
 		end
 	end)
 	table.insert(offers, offer)
@@ -162,6 +163,17 @@ end
 function Conveyor.ClearLane()
 	for i = #offers, 1, -1 do
 		removeOffer(offers[i], true)
+	end
+end
+
+-- Dawn restock (called by DayNight): every unsold brainrot on the belt
+-- despawns and a fresh lineup rides in, staggered along the lane so the
+-- belt is full the moment the new day starts. Brainrots already placed
+-- on bases are records in PlotManager, never offers — untouched here.
+function Conveyor.Restock()
+	Conveyor.ClearLane()
+	for i = 0, MAX_OFFERS - 1 do
+		spawnOffer(BELT_START_X + i * 30)
 	end
 end
 

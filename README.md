@@ -6,10 +6,10 @@
 
 A 3D Roblox brainrot game in the genre *Steal a Brainrot* began, built for
 [make.fun's roblox-brainrot-01 bounty](https://make.fun/bounty/roblox-brainrot-01).
-Absurd meme characters ride a conveyor belt through a colourful 3D world —
-buy them, stand them on your base, and watch the cash tick up every second.
-Then protect them: rivals can steal your brainrots right off their pads,
-and every 85 seconds a tsunami sweeps the lane.
+Absurd meme characters ride a red-carpet conveyor through a colourful 3D
+world — buy them, stand them on your base, and watch the Coin tick up every
+second. Then protect them: rivals can steal your brainrots right off their
+pads, and every 85 seconds a tsunami sweeps the lane.
 
 ## How to play
 
@@ -18,9 +18,23 @@ and every 85 seconds a tsunami sweeps the lane.
   free pad at your base and earns its income every second.
 - **Catch wild ones.** Common brainrots wander the grass north and south of
   the lane. Catching one is free.
-- **Fourteen brainrots, five rarities.** Common → Rare → Epic → Legendary →
-  Mythic, from the 25-cash Noobini to Godini Brainrotti himself
-  ($1,100,000, $19,000 a second). The full list is in the in-game Catalog.
+- **Twenty-three brainrots, six rarities.** Common → Rare → Epic →
+  Legendary → Mythic → **Dewa Langit**, from the 25-Coin Noobini to Paus
+  Bulan, the moon whale (32,000,000 Coin, 600,000 a second) — a giant that
+  towers over the bases. The full list is in the in-game Catalog.
+- **Speed.** Buy WalkSpeed tiers with Coin at the shop, or grab the Robux
+  game passes — Speed x2 (1 Robux) and Speed x5 (5 Robux) multiply your
+  tier speed permanently.
+- **Treadmill.** Run on the treadmill by the shop to fill a meter and win
+  a random brainrot. Upgrade it (Lv1–10) for faster fills and better
+  rolls — but Dewa Langit never comes from a treadmill.
+- **Upgrade your pen.** 20 pen levels: more pads (6 → 24), a richer look
+  at Lv5/10/15/20, and +2% income per level.
+- **Hatch eggs.** The Egg Hatchery sells Telur Umum → Telur Ilahi. Incubate
+  an egg in the nest at your base; the Divine egg is the only one that can
+  hatch a Dewa Langit.
+- **Day & night.** A 6-minute cycle drives the sky, the lamps and the HUD
+  clock — and every dawn the conveyor stock is wiped and restocked.
 - **Steal.** Every placed brainrot has a Steal prompt. Grab a rival's
   brainrot and it rides over your head — the theft only counts when you
   carry it back onto your own plot, and you run slower while carrying. The
@@ -31,9 +45,9 @@ and every 85 seconds a tsunami sweeps the lane.
   wall of water sweeps the lane. Standing on any base plot is safe; anyone
   caught in the open is flung, hurt, drops their carry, and the belt is
   washed clean.
-- **Rebirth.** At the shrine (or the HUD button), trade your cash and your
+- **Rebirth.** At the shrine (or the HUD button), trade your Coin and your
   whole collection for a permanent +50% income multiplier per rebirth.
-  Costs grow ×4 each time: $25,000, then $100,000, then $400,000…
+  Costs grow ×4 each time: 25,000, then 100,000, then 400,000…
 
 ## The world
 

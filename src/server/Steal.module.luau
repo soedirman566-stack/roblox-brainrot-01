@@ -11,12 +11,14 @@ local Steal = {}
 
 local CARRY_HEIGHT = 5.2
 local RESCUE_DISTANCE = 6.5
-local CARRY_WALKSPEED = 13
-local NORMAL_WALKSPEED = 16
 
 local plots = nil
 local economy = nil
 local notify: ((Player, string) -> ())? = nil
+-- Speed is owned by SpeedPass (tiers x Robux passes); carrying just
+-- asks it for the slowed carry speed and hands control back after.
+local getCarrySpeed: ((Player) -> number)? = nil
+local restoreSpeed: ((Player) -> ())? = nil
 
 local carriedByThief: { [Player]: any } = {}
 
@@ -24,6 +26,8 @@ function Steal.Init(deps)
 	plots = deps.Plots
 	economy = deps.Economy
 	notify = deps.Notify
+	getCarrySpeed = deps.GetCarrySpeed
+	restoreSpeed = deps.RestoreSpeed
 end
 
 local function tell(player: Player, text: string)
@@ -38,7 +42,11 @@ local function setCarrying(player: Player, record)
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		humanoid.WalkSpeed = if record then CARRY_WALKSPEED else NORMAL_WALKSPEED
+		if record and getCarrySpeed then
+			humanoid.WalkSpeed = getCarrySpeed(player)
+		elseif not record and restoreSpeed then
+			restoreSpeed(player)
+		end
 	end
 end
 
@@ -132,7 +140,7 @@ local function onStealPrompt(record, thief: Player)
 		return
 	end
 	if not plots.FreePad(thief) then
-		tell(thief, "Your base is full!")
+		tell(thief, "Your pen is full!")
 		return
 	end
 	record.CarriedBy = thief
